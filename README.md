@@ -45,30 +45,44 @@ As ferramentas de desenvolvimento e apoio à implementação estão organizadas 
 | Git | Controle de versão e histórico de alterações |
 | GitHub | Hospedagem e gerenciamento do repositório |
 
-As tecnologias utilizadas na aplicação, incluindo framework frontend, linguagem, bibliotecas e eventuais tecnologias de backend, serão documentadas após a definição e validação da estrutura gerada durante o desenvolvimento.
+### Tecnologias da aplicação
+
+| Tecnologia | Versão declarada | Finalidade |
+| --- | --- | --- |
+| React | 19.2 | Interface da aplicação |
+| TypeScript | 5.8 | Tipagem estática |
+| TanStack Start / Router | 1.168.61 / 1.170.42 | Aplicação com renderização no servidor e rotas baseadas em arquivos |
+| Vite | 8.1 | Desenvolvimento e build |
+| Tailwind CSS | 4.3 | Estilos e utilitários CSS |
+| Radix UI e Lucide React | conforme `package.json` | Componentes acessíveis e ícones |
+| Vitest | 4.1 | Testes automatizados |
+
+As versões completas e demais dependências estão declaradas em `package.json`; `bun.lock` registra a resolução usada pelo Bun.
 
 ## Estrutura do projeto
 
-A documentação de planejamento, especificação e utilização de Inteligência Artificial será mantida separadamente do código-fonte.
+A documentação de planejamento, especificação e utilização de Inteligência Artificial permanece separada do código-fonte.
 
 ```text
 .
-|-- docs/
-|   |-- prompt-lovable.md    # Prompts utilizados na prototipação
-|   |-- prompt-copilot.md    # Prompts utilizados na implementação
-|   |-- spec.md              # Especificação funcional do projeto
-|   |-- spec-backend.md      # Especificação técnica do backend
-|   `-- testes.md            # Registro dos testes e resultados
-|
-|-- src/                     # Código-fonte da aplicação (a definir)
-|
-|-- public/                  # Arquivos públicos e recursos estáticos (se aplicável)
-|
-|-- README.md                # Documentação principal
-`-- .gitignore               # Arquivos e diretórios ignorados pelo Git
+|-- src/
+|   |-- components/          # Componentes do catálogo, carrinho e UI
+|   |-- data/                # Catálogo e categorias
+|   |-- lib/                 # Regras do carrinho e utilitários
+|   |-- routes/              # Rotas TanStack Start
+|   |-- test/                # Testes Vitest
+|   `-- styles.css           # Design system e estilos responsivos
+|-- public/                  # Favicon e arquivos públicos
+|-- documentos/              # Especificações e documentação original
+|-- prompts/                 # Prompts Lovable e Copilot preservados
+|-- docs/testes.md           # Registro de validação da implementação
+|-- package.json             # Dependências e comandos da aplicação
+|-- vite.config.ts           # Configuração do Vite/TanStack Start
+|-- vitest.config.ts         # Configuração dos testes
+`-- README.md                # Documentação principal
 ```
 
-A organização interna das pastas de implementação poderá ser ajustada conforme as tecnologias e a arquitetura efetivamente adotadas.
+O frontend é executado diretamente na raiz deste repositório, sem uma pasta de projeto aninhada.
 
 ## Requisitos
 
@@ -93,31 +107,38 @@ As definições relacionadas ao backend, quando aplicáveis, estão documentadas
 
 ### Pré-requisitos
 
-Os requisitos de ambiente, incluindo versões de runtime, gerenciador de pacotes e dependências, serão definidos conforme a stack tecnológica adotada.
+É necessário ter Node.js e npm ou Bun instalados. O arquivo `bun.lock` permite instalar as versões travadas com Bun; também é possível usar npm.
 
 ### Instalação
 
-Após a definição da estrutura do projeto, serão documentados os comandos necessários para instalação das dependências.
+Na raiz do repositório:
 
-### Execução
+```sh
+bun install
+```
 
-As instruções para iniciar a aplicação localmente serão atualizadas após a implementação.
+Alternativamente:
 
-O objetivo é disponibilizar um MVP funcional que possa ser executado localmente ou acessado por meio de um link público.
+```sh
+npm install
+```
+
+### Execução e validação
+
+```sh
+bun run dev       # inicia o servidor de desenvolvimento
+bun run build     # gera o build de produção
+bun run test      # executa os testes automatizados
+bun run lint      # verifica o código com ESLint
+```
+
+Com npm, substitua `bun run` por `npm run` nos comandos acima.
+
+O Vite disponibiliza a aplicação localmente e o comando `preview` permite conferir o build de produção.
 
 ## API
 
-Caso o backend seja implementado como uma API independente, seus endpoints serão documentados nesta seção após a definição e implementação das rotas.
-
-A documentação deverá apresentar:
-
-- Método HTTP e endereço da rota.
-- Finalidade de cada operação.
-- Parâmetros e dados necessários.
-- Estrutura das respostas.
-- Códigos de status e possíveis erros.
-
-As rotas efetivamente disponibilizadas serão registradas após a validação do backend. Nenhum endpoint é considerado implementado antes dessa etapa.
+O MVP atual não possui API de negócio nem integração com backend. O catálogo é local e a confirmação do pedido é demonstrativa; não há cobrança nem persistência do carrinho.
 
 ## Utilização de Inteligência Artificial
 
@@ -129,7 +150,7 @@ A Inteligência Artificial será utilizada como ferramenta de apoio em diferente
 | Prototipação e implementação | Geração das interfaces com Lovable e assistência ao desenvolvimento com GitHub Copilot |
 | Validação e correção | Análise do código gerado, identificação de problemas, correções e execução de testes |
 
-Os prompts utilizados serão preservados na pasta `docs/`, acompanhados de uma breve descrição de suas finalidades.
+Os prompts originais estão preservados em `prompts/`, acompanhados de uma breve descrição de suas finalidades.
 
 O código gerado por ferramentas de IA deverá ser analisado, compreendido e testado antes de sua incorporação à aplicação.
 
@@ -149,7 +170,7 @@ Os cenários de teste deverão verificar:
 - Apresentação de mensagens de feedback.
 - Adaptação da interface a diferentes tamanhos de tela.
 
-Os procedimentos executados, resultados obtidos e eventuais correções serão registrados em `docs/testes.md`.
+Os testes executados pela implementação integrada estão registrados em `docs/testes.md`. Os documentos de planejamento existentes permanecem em `documentos/`.
 
 ## Critérios de conclusão
 

@@ -13,14 +13,30 @@ import {
   Sprout,
   Utensils,
   Wheat,
+  type LucideIcon,
 } from "lucide-react";
-import heroAsset from "@/assets/tavern-hero.asset.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ProductCard } from "@/components/products/product-card";
 import { CartContent } from "@/components/cart/cart-content";
-import { categories, filterProducts, products, type Category, type Product } from "@/data/products";
-import { cartReducer, initialCart, itemCount } from "@/lib/cart";
+import { filterProducts } from "@/data/products";
+import { getCategories } from "@/lib/api/categories";
+import { ApiClientError } from "@/lib/api/client";
+import { createOrder } from "@/lib/api/orders";
+import { getProducts } from "@/lib/api/products";
+import type { Category, Product } from "@/lib/api/types";
+import { cartReducer, initialCart, itemCount, orderItemsFromCart, validCart } from "@/lib/cart";
+
+type CatalogState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; categories: Category[]; products: Product[] };
+
+function errorMessage(error: unknown, fallback: string): string {
+  if (error instanceof ApiClientError) return error.message;
+  if (error instanceof Error) return error.message;
+  return fallback;
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,7 +51,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Hambúrgueres, poções refrescantes e doces encantadores em um cardápio de fantasia original.",
+          "Pratos grelhados, poções refrescantes e acompanhamentos em um cardápio de fantasia original.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -44,25 +60,56 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const categoryIcons = {
+const categoryIcons: Record<string, LucideIcon> = {
   all: Utensils,
-  burgers: Beef,
+  mains: Beef,
   drinks: CupSoda,
   sides: Wheat,
   desserts: IceCreamBowl,
 };
 
 function Index() {
-  const [category, setCategory] = useState<Category>("all");
+  const [catalog, setCatalog] = useState<CatalogState>({ status: "loading" });
+  const [category, setCategory] = useState("all");
   const [cart, dispatch] = useReducer(cartReducer, initialCart);
   const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void Promise.all([getCategories(controller.signal), getProducts(controller.signal)])
+      .then(([loadedCategories, loadedProducts]) => {
+        setCatalog({
+          status: "success",
+          categories: loadedCategories,
+          products: loadedProducts,
+        });
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted)
+          setCatalog({
+            status: "error",
+            message: errorMessage(error, "Não foi possível carregar o cardápio."),
+          });
+      });
+
+    return () => controller.abort();
+  }, []);
+
   useEffect(() => {
     if (!notice) return;
     const timeout = setTimeout(() => setNotice(""), 2500);
     return () => clearTimeout(timeout);
   }, [notice]);
-  const filtered = filterProducts(category);
+  const categories =
+    catalog.status === "success"
+      ? [{ id: "all", name: "Todos", slug: "all" }, ...catalog.categories]
+      : [{ id: "all", name: "Todos", slug: "all" }];
+  const products = catalog.status === "success" ? catalog.products : [];
+  const filtered = filterProducts(products, category);
+  const featuredProducts = products.filter((product) => product.featured);
   const count = itemCount(cart.items);
   function explore() {
     document.getElementById("cardapio")?.scrollIntoView({
@@ -72,12 +119,34 @@ function Index() {
     });
   }
   function addProduct(product: Product) {
-    dispatch({ type: "add", id: product.id });
+    if (cart.items.some((item) => item.product.id === product.id && item.quantity >= 99)) {
+      setNotice("Limite máximo de 99 unidades por produto.");
+      return;
+    }
+    dispatch({ type: "add", product });
     setNotice(`${product.name} adicionado à sacola!`);
+  }
+  async function submitOrder() {
+    if (!validCart(cart.items) || isSubmitting) return;
+    setIsSubmitting(true);
+    setOrderError(null);
+
+    try {
+      const order = await createOrder(orderItemsFromCart(cart.items));
+      dispatch({ type: "orderConfirmed", order });
+      setNotice("Pedido confirmado pela Taverna!");
+    } catch (error) {
+      setOrderError(errorMessage(error, "Não foi possível registrar o pedido."));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
   function changeOpen(value: boolean) {
     setOpen(value);
-    if (!value) dispatch({ type: "dismiss" });
+    if (!value) {
+      dispatch({ type: "dismiss" });
+      setOrderError(null);
+    }
   }
   return (
     <Dialog open={open} onOpenChange={changeOpen}>
@@ -118,12 +187,7 @@ function Index() {
       </header>
       <main>
         <section className="hero" aria-labelledby="tavern-title">
-          <img
-            className="hero-image"
-            src={heroAsset.url}
-            alt="Hambúrguer artesanal com batatas e bebida em uma mesa rústica da taverna"
-            fetchPriority="high"
-          />
+          <div className="hero-image" aria-hidden="true" />
           <div className="hero-shade" />
           <div className="page-width">
             <div className="hero-copy">
@@ -167,9 +231,11 @@ function Index() {
               </div>
             </div>
             <div className="featured-grid">
-              {products
-                .filter((product) => product.featured)
-                .map((product) => (
+              {catalog.status === "loading" && (
+                <p role="status">Carregando os produtos em destaque…</p>
+              )}
+              {catalog.status === "success" &&
+                featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} featured onAdd={addProduct} />
                 ))}
             </div>
@@ -188,33 +254,56 @@ function Index() {
                 </p>
               </div>
               <span className="text-xs text-muted-foreground pb-1 whitespace-nowrap">
-                {filtered.length} produtos
+                {catalog.status === "success"
+                  ? `${filtered.length} produtos`
+                  : catalog.status === "loading"
+                    ? "Carregando..."
+                    : ""}
               </span>
             </div>
             <nav className="category-list" aria-label="Categorias do cardápio">
               {categories.map((item) => {
-                const Icon = categoryIcons[item.id];
+                const Icon = categoryIcons[item.slug] ?? Utensils;
                 return (
                   <Button
-                    key={item.id}
-                    variant={category === item.id ? "selected" : "category"}
+                    key={item.slug}
+                    variant={category === item.slug ? "selected" : "category"}
                     size="lg"
-                    aria-pressed={category === item.id}
-                    onClick={() => setCategory(item.id)}
+                    aria-pressed={category === item.slug}
+                    disabled={catalog.status !== "success"}
+                    onClick={() => setCategory(item.slug)}
                   >
                     <Icon size={16} />
                     {item.name}
-                    {category === item.id && <Check size={12} />}
+                    {category === item.slug && <Check size={12} />}
                   </Button>
                 );
               })}
             </nav>
-            <div className="catalog-grid" data-testid="catalog">
-              {filtered.map((product) => (
-                <ProductCard key={product.id} product={product} onAdd={addProduct} />
-              ))}
-            </div>
-            {filtered.length === 0 && (
+            {catalog.status === "loading" && (
+              <p role="status" className="py-12 text-center text-muted-foreground">
+                Carregando cardápio...
+              </p>
+            )}
+            {catalog.status === "error" && (
+              <div role="alert" className="py-12 text-center text-muted-foreground">
+                <p>O cardápio está temporariamente indisponível.</p>
+                <p className="mt-2 text-sm">{catalog.message}</p>
+              </div>
+            )}
+            {catalog.status === "success" && filtered.length > 0 && (
+              <div className="catalog-grid" data-testid="catalog">
+                {filtered.map((product) => (
+                  <ProductCard key={product.id} product={product} onAdd={addProduct} />
+                ))}
+              </div>
+            )}
+            {catalog.status === "success" && products.length === 0 && (
+              <p className="py-12 text-center text-muted-foreground">
+                Nenhum produto está disponível no momento.
+              </p>
+            )}
+            {catalog.status === "success" && products.length > 0 && filtered.length === 0 && (
               <p className="py-12 text-center text-muted-foreground">
                 Nenhum produto encontrado nesta categoria.
               </p>
@@ -242,7 +331,14 @@ function Index() {
         </div>
       </footer>
       <DialogContent className="cart-dialog">
-        <CartContent state={cart} dispatch={dispatch} notify={setNotice} />
+        <CartContent
+          state={cart}
+          dispatch={dispatch}
+          notify={setNotice}
+          onConfirm={() => void submitOrder()}
+          isSubmitting={isSubmitting}
+          errorMessage={orderError}
+        />
       </DialogContent>
       <div role="status" aria-live="polite" aria-atomic="true">
         {notice && (

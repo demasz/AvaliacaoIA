@@ -1,6 +1,8 @@
 # Especificação — Cardápio Digital
 
-> **Estado da integração:** a aplicação já usa configuração oficial de Vite, TanStack Start e Nitro, sem o wrapper Lovable. A independência de build está validada; a independência visual permanece pendente porque os binários das nove imagens não estão no repositório. Consulte `docs/testes.md`.
+> **Estado da integração:** a aplicação usa configuração oficial de Vite, TanStack Start e Nitro, sem o wrapper Lovable. Seis imagens de pratos ficam em `public/images/`; as bebidas usam o fallback visual. Consulte `docs/testes.md`.
+
+> **Atualização do catálogo:** os seis pratos foram alinhados aos recortes locais (`Mix de Carnes`, `Espetão da Taverna`, `Espetinho da Taverna`, `Mix de Cogumelos`, `Pão com Queijo` e `Maçã Recheada`). As duas bebidas foram mantidas.
 
 # 1. VISÃO GERAL DO PROJETO
 
@@ -111,7 +113,7 @@ O usuário deverá conseguir filtrar o catálogo selecionando uma categoria.
 
 ### Categorias sugeridas
 
-- Hambúrgueres.
+- Pratos principais.
 - Bebidas.
 - Acompanhamentos.
 - Sobremesas.
@@ -202,9 +204,9 @@ Total = Soma dos subtotais.
 
 | Produto | Preço | Quantidade | Subtotal |
 |---|---:|---:|---:|
-| Hambúrguer da Floresta | R$ 25,00 | 2 | R$ 50,00 |
+| Mix de Carnes | R$ 25,00 | 2 | R$ 50,00 |
 | Poção Azul | R$ 8,00 | 1 | R$ 8,00 |
-| Batatas Goron | R$ 12,00 | 2 | R$ 24,00 |
+| Espetinho da Taverna | R$ 12,00 | 2 | R$ 24,00 |
 
 Total esperado: R$ 82,00.
 

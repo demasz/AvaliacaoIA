@@ -13,16 +13,16 @@ O projeto consiste no desenvolvimento de um MVP funcional, utilizando ferramenta
 - Controle de quantidades dos itens selecionados.
 - Remoção de produtos do carrinho.
 - Cálculo automático dos subtotais e do valor total do pedido.
-- Finalização simulada com confirmação e resumo dos itens selecionados.
+- Registro persistente de pedidos demonstrativos com resumo retornado pela API.
 - Validação de pedidos vazios.
 - Mensagens de feedback para orientar o usuário durante as operações.
 - Interface responsiva para computadores, tablets e dispositivos móveis.
 
 ## Escopo do MVP
 
-A aplicação contempla o fluxo principal de consulta de produtos e montagem de pedidos, desde a visualização do catálogo até a confirmação simulada da compra.
+A aplicação contempla o fluxo principal de consulta do catálogo, montagem do carrinho e registro de um pedido demonstrativo no PostgreSQL.
 
-Serão utilizados produtos e informações fictícias para demonstrar o funcionamento do sistema.
+Os produtos são fictícios. A API calcula os valores finais e persiste os pedidos; não há cobrança real.
 
 Não fazem parte do escopo:
 
@@ -32,30 +32,33 @@ Não fazem parte do escopo:
 - Gerenciamento de estoque.
 - Painel administrativo.
 - Integrações externas com sistemas comerciais.
+- Consulta pública ou administrativa do histórico geral de pedidos.
 
 ## Tecnologias e ferramentas
 
 As ferramentas de desenvolvimento e apoio à implementação estão organizadas conforme suas respectivas finalidades.
 
-| Ferramenta | Finalidade |
-| --- | --- |
-| Lovable | Prototipação histórica da interface; não é dependência de execução |
-| GitHub Copilot | Assistência na implementação, análise e correção do código |
-| Visual Studio Code | Ambiente de desenvolvimento e edição do código-fonte |
-| Git | Controle de versão e histórico de alterações |
-| GitHub | Hospedagem e gerenciamento do repositório |
+| Ferramenta         | Finalidade                                                         |
+| ------------------ | ------------------------------------------------------------------ |
+| Lovable            | Prototipação histórica da interface; não é dependência de execução |
+| GitHub Copilot     | Assistência na implementação, análise e correção do código         |
+| Visual Studio Code | Ambiente de desenvolvimento e edição do código-fonte               |
+| Git                | Controle de versão e histórico de alterações                       |
+| GitHub             | Hospedagem e gerenciamento do repositório                          |
 
 ### Tecnologias da aplicação
 
-| Tecnologia | Versão declarada | Finalidade |
-| --- | --- | --- |
-| React | 19.2 | Interface da aplicação |
-| TypeScript | 5.8 | Tipagem estática |
-| TanStack Start / Router | 1.168.61 / 1.170.42 | Aplicação com renderização no servidor e rotas baseadas em arquivos |
-| Vite | 8.1 | Desenvolvimento e build |
-| Tailwind CSS | 4.3 | Estilos e utilitários CSS |
-| Radix UI e Lucide React | conforme `package.json` | Componentes acessíveis e ícones |
-| Vitest | 4.1 | Testes automatizados |
+| Tecnologia              | Versão declarada        | Finalidade                                                          |
+| ----------------------- | ----------------------- | ------------------------------------------------------------------- |
+| React                   | 19.2                    | Interface da aplicação                                              |
+| TypeScript              | 5.8                     | Tipagem estática                                                    |
+| TanStack Start / Router | 1.168.61 / 1.170.42     | Aplicação com renderização no servidor e rotas baseadas em arquivos |
+| Vite                    | 8.1                     | Desenvolvimento e build                                             |
+| Tailwind CSS            | 4.3                     | Estilos e utilitários CSS                                           |
+| Radix UI e Lucide React | conforme `package.json` | Componentes acessíveis e ícones                                     |
+| Vitest                  | 4.1                     | Testes automatizados                                                |
+
+O backend independente usa Node.js 24+, Express 5, TypeScript, PostgreSQL, Sequelize, Zod, Umzug, Vitest e Supertest. Suas dependências e scripts ficam em `backend/package.json`.
 
 As versões completas e demais dependências estão declaradas em `package.json`; `bun.lock` registra a resolução usada pelo Bun.
 
@@ -63,7 +66,7 @@ As versões completas e demais dependências estão declaradas em `package.json`
 
 A configuração usa os plugins oficiais de Vite, TanStack Start, React, Tailwind CSS e Nitro. O build e o servidor não dependem do wrapper, da telemetria nem de credenciais do Lovable.
 
-As imagens ainda não estão autocontidas: os nove arquivos `src/assets/*.asset.json` guardam metadados e caminhos `/__l5e/...`, mas os binários não estão no repositório. Como o proxy específico do ambiente Lovable foi removido, obtenha os arquivos originais com licença adequada ou substitua-os por imagens locais autorizadas antes de considerar a experiência visual independente.
+Seis recortes de pratos, criados por IA e fornecidos em `Assets/`, foram copiados para `public/images/` e são servidos localmente. As duas bebidas não têm imagens próprias e usam o fallback da interface. Os metadados antigos em `src/assets/*.asset.json`, que apontam para caminhos `/__l5e/...`, não são usados pelo catálogo atual.
 
 ## Estrutura do projeto
 
@@ -73,15 +76,20 @@ A documentação de planejamento, especificação e utilização de Inteligênci
 .
 |-- src/
 |   |-- components/          # Componentes do catálogo, carrinho e UI
-|   |-- data/                # Catálogo e categorias
-|   |-- assets/              # Metadados das imagens; binários pendentes
-|   |-- lib/                 # Regras do carrinho e utilitários
+|   |-- data/                # Tipos, filtros e formatação do catálogo
+|   |-- assets/              # Metadados legados das imagens do protótipo
+|   |-- lib/                 # Regras do carrinho e cliente HTTP da API
 |   |-- routes/              # Rotas TanStack Start
 |   |-- test/                # Testes Vitest
 |   |-- server.ts            # Adaptação de erros do SSR
 |   |-- start.ts             # Middlewares do servidor
 |   `-- styles.css           # Design system e estilos responsivos
-|-- public/                  # Favicon e arquivos públicos
+|-- backend/
+|   |-- src/                 # API Express, models, migrations e services
+|   `-- tests/               # Testes unitários e de integração
+|-- public/
+|   |-- images/              # Seis imagens locais dos pratos
+|   `-- ...                  # Favicon e demais arquivos públicos
 |-- docs/                    # Especificações, testes e decisões técnicas
 |-- prompts/                 # Prompts de implementação e auditoria
 |-- package.json             # Dependências e comandos da aplicação
@@ -96,16 +104,16 @@ O frontend é executado diretamente na raiz deste repositório, sem uma pasta de
 
 Os requisitos funcionais do projeto estão organizados em oito funcionalidades principais:
 
-| Identificação | Requisito |
-| --- | --- |
-| RF01 | Catálogo de produtos |
-| RF02 | Organização e filtragem por categorias |
-| RF03 | Adição de produtos ao carrinho |
-| RF04 | Controle de quantidades e remoção de itens |
-| RF05 | Cálculo automático de subtotais e valor total |
-| RF06 | Finalização simulada do pedido |
-| RF07 | Interface responsiva |
-| RF08 | Validação de pedidos e mensagens de feedback |
+| Identificação | Requisito                                     |
+| ------------- | --------------------------------------------- |
+| RF01          | Catálogo de produtos                          |
+| RF02          | Organização e filtragem por categorias        |
+| RF03          | Adição de produtos ao carrinho                |
+| RF04          | Controle de quantidades e remoção de itens    |
+| RF05          | Cálculo automático de subtotais e valor total |
+| RF06          | Finalização simulada do pedido                |
+| RF07          | Interface responsiva                          |
+| RF08          | Validação de pedidos e mensagens de feedback  |
 
 A especificação detalhada dos requisitos, regras de negócio e critérios de aceitação está disponível em `docs/spec.md`.
 
@@ -115,41 +123,57 @@ As definições relacionadas ao backend, quando aplicáveis, estão documentadas
 
 ### Pré-requisitos
 
-É necessário ter Node.js e Bun instalados. Bun é o gerenciador recomendado porque `bun.lock` é o lockfile versionado.
+É necessário ter Node.js 24 ou superior, Bun e PostgreSQL instalados. Bun é o gerenciador recomendado para o frontend porque `bun.lock` é o lockfile versionado. O backend possui lockfile próprio.
 
 ### Instalação
 
-Na raiz do repositório:
+Na raiz do repositório, instale e inicie o frontend:
 
 ```sh
 bun install
+bun run dev
 ```
 
-### Execução e validação
+O frontend usa `http://localhost:3001/api` por padrão. Para outra URL, defina `VITE_API_URL` no ambiente do Vite.
+
+Em outro terminal, configure e inicie o backend:
 
 ```sh
-bun run dev       # inicia o servidor de desenvolvimento
-bun run build     # gera o build de produção
-bun run test      # executa os testes automatizados
-bun run typecheck # verifica os tipos TypeScript
-bun run lint      # verifica o código com ESLint
+cd backend
+bun install
 ```
 
-O comando `bun run preview` permite conferir o build de produção. O uso de npm é possível, mas não reproduz o lockfile Bun.
+```powershell
+Copy-Item .env.example .env
+```
 
-## API
+Edite `backend/.env` com uma URL PostgreSQL local válida e configure `FRONTEND_ORIGINS` com a origem do frontend. Em seguida, crie o banco indicado por `DATABASE_URL` e execute:
 
-O MVP não possui API de negócio nem integração com banco de dados. TanStack Start/Nitro executam a renderização no servidor; o catálogo é local e a confirmação é demonstrativa, sem cobrança nem persistência do carrinho. As decisões e limitações estão em `docs/spec-backend.md`.
+```sh
+bun run db:migrate
+bun run db:seed
+bun run dev
+```
+
+O backend e o frontend são processos independentes. Os demais comandos de validação do frontend, executados na raiz, são `bun run build`, `bun run test`, `bun run typecheck` e `bun run lint`; `bun run preview` serve o build de produção.
+
+Consulte [backend/README.md](./backend/README.md) para configuração completa, testes, migrações e exemplos de chamadas.
+
+## API e persistência
+
+O frontend consulta categorias e produtos ativos em `GET /api/categories` e `GET /api/products`. A confirmação envia somente identificadores e quantidades a `POST /api/orders`; o backend valida os dados, busca os preços atuais, calcula os subtotais e o total e salva o pedido e seus snapshots em uma transação. Não há endpoint público para listar pedidos nem processamento de pagamento.
+
+As configurações e limitações da API estão em [docs/spec-backend.md](./docs/spec-backend.md). A especificação original enviada para implementação foi preservada em [prompts/prompt-backend-copilot.md](./prompts/prompt-backend-copilot.md).
 
 ## Utilização de Inteligência Artificial
 
 A Inteligência Artificial será utilizada como ferramenta de apoio em diferentes etapas do desenvolvimento.
 
-| Etapa | Aplicação |
-| --- | --- |
-| Planejamento | Análise dos requisitos, organização das funcionalidades e definição da estrutura do projeto |
-| Prototipação e implementação | Prototipação histórica com Lovable e assistência ao desenvolvimento com GitHub Copilot |
-| Validação e correção | Análise do código gerado, identificação de problemas, correções e execução de testes |
+| Etapa                        | Aplicação                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| Planejamento                 | Análise dos requisitos, organização das funcionalidades e definição da estrutura do projeto |
+| Prototipação e implementação | Prototipação histórica com Lovable e assistência ao desenvolvimento com GitHub Copilot      |
+| Validação e correção         | Análise do código gerado, identificação de problemas, correções e execução de testes        |
 
 Os prompts originais estão preservados em `prompts/`, acompanhados de uma breve descrição de suas finalidades.
 

@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { Leaf, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { categories, money, type Product } from "@/data/products";
+import { money, type Product } from "@/data/products";
 
-export function ProductImage({ product, className }: { product: Product; className?: string }) {
-  const [failed, setFailed] = useState(false);
+type ImageProduct = Pick<Product, "id" | "name" | "imageUrl">;
+
+export function ProductImage({
+  product,
+  className,
+}: {
+  product: ImageProduct;
+  className?: string;
+}) {
+  const [failed, setFailed] = useState(product.imageUrl === null);
   return failed ? (
     <div
       className={`${className ?? ""} grid place-items-center bg-muted text-forest`}
@@ -15,7 +23,7 @@ export function ProductImage({ product, className }: { product: Product; classNa
     </div>
   ) : (
     <img
-      src={product.image}
+      src={product.imageUrl ?? ""}
       alt={product.name}
       className={className}
       loading="lazy"
@@ -32,19 +40,18 @@ export function ProductCard({
   featured?: boolean;
   onAdd: (product: Product) => void;
 }) {
-  const category = categories.find((category) => category.id === product.category);
   return (
     <article className={featured ? "featured-card" : "product-card"}>
       <ProductImage product={product} className={featured ? "" : "product-card-image"} />
       <div className={featured ? "featured-content" : "product-card-content"}>
         <span className="eyebrow mb-2 flex items-center gap-1.5 text-muted-foreground">
           {featured && <Sparkles size={12} />}
-          {featured ? product.featured : category?.name}
+          {featured ? product.featuredLabel : product.category.name}
         </span>
         <h3 className="product-title">{product.name}</h3>
         <p className="product-description mt-2 mb-4">{product.description}</p>
         <div className="mt-auto flex w-full flex-wrap items-center justify-between gap-2">
-          <span className="price">{money(product.price)}</span>
+          <span className="price">{money(product.priceCents)}</span>
           <Button
             variant={featured ? "tavern" : "secondary"}
             size={featured ? "default" : "icon"}

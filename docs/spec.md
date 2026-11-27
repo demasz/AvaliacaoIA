@@ -1,4 +1,6 @@
-# SPEC.md — Cardápio Digital
+# Especificação — Cardápio Digital
+
+> **Estado da integração:** a aplicação já usa configuração oficial de Vite, TanStack Start e Nitro, sem o wrapper Lovable. A independência de build está validada; a independência visual permanece pendente porque os binários das nove imagens não estão no repositório. Consulte `docs/testes.md`.
 
 # 1. VISÃO GERAL DO PROJETO
 
@@ -96,10 +98,10 @@ Cada produto deverá possuir:
 
 ### Critérios de aceitação
 
-- [ ] Existem pelo menos seis produtos.
-- [ ] Todos apresentam nome, preço, descrição e categoria.
+- [x] Existem pelo menos seis produtos.
+- [x] Todos apresentam nome, preço, descrição e categoria.
 - [ ] Os produtos possuem representação visual.
-- [ ] Os preços estão formatados em reais.
+- [x] Os preços estão formatados em reais.
 
 ## RF02 — Categorias
 
@@ -125,11 +127,11 @@ O usuário deverá conseguir filtrar o catálogo selecionando uma categoria.
 
 ### Critérios de aceitação
 
-- [ ] Existem pelo menos duas categorias.
-- [ ] Todos os produtos estão associados a uma categoria.
-- [ ] A filtragem funciona corretamente.
-- [ ] A opção de visualizar todos funciona.
-- [ ] O carrinho permanece inalterado durante a filtragem.
+- [x] Existem pelo menos duas categorias.
+- [x] Todos os produtos estão associados a uma categoria.
+- [x] A filtragem funciona corretamente.
+- [x] A opção de visualizar todos funciona.
+- [x] O carrinho permanece inalterado durante a filtragem.
 
 ## RF03 — Carrinho de compras
 
@@ -158,12 +160,12 @@ O carrinho será apresentado em um modal central sobre a interface do cardápio.
 
 ### Critérios de aceitação
 
-- [ ] É possível adicionar produtos.
-- [ ] Produtos repetidos incrementam sua quantidade.
-- [ ] Os itens aparecem corretamente.
-- [ ] O indicador de quantidade é atualizado.
-- [ ] O modal abre e fecha corretamente.
-- [ ] O carrinho preserva seus dados durante a navegação.
+- [x] É possível adicionar produtos.
+- [x] Produtos repetidos incrementam sua quantidade.
+- [x] Os itens aparecem corretamente.
+- [x] O indicador de quantidade é atualizado.
+- [x] O modal abre e fecha corretamente.
+- [x] O carrinho preserva seus dados durante a navegação.
 
 ## RF04 — Controle de quantidades
 
@@ -180,11 +182,11 @@ O usuário deverá conseguir aumentar ou diminuir quantidades e remover itens.
 
 ### Critérios de aceitação
 
-- [ ] O incremento funciona.
-- [ ] A redução funciona.
-- [ ] Não existem quantidades inválidas.
-- [ ] A remoção funciona.
-- [ ] Os valores são atualizados.
+- [x] O incremento funciona.
+- [x] A redução funciona.
+- [x] Não existem quantidades inválidas.
+- [x] A remoção funciona.
+- [x] Os valores são atualizados.
 
 ## RF05 — Cálculo automático
 
@@ -217,11 +219,11 @@ Total esperado: R$ 82,00.
 
 ### Critérios de aceitação
 
-- [ ] Subtotais corretos.
-- [ ] Total correto.
-- [ ] Alterações atualizam os cálculos.
-- [ ] Valores formatados em reais.
-- [ ] Sem erros de precisão perceptíveis.
+- [x] Subtotais corretos.
+- [x] Total correto.
+- [x] Alterações atualizam os cálculos.
+- [x] Valores formatados em reais.
+- [x] Sem erros de precisão perceptíveis.
 
 ## RF06 — Finalização simulada
 
@@ -251,12 +253,12 @@ O usuário deverá conseguir confirmar o pedido e visualizar uma mensagem de con
 
 ### Critérios de aceitação
 
-- [ ] É possível confirmar pedidos válidos.
-- [ ] A confirmação apresenta mensagem de sucesso.
-- [ ] O resumo apresenta todos os produtos.
-- [ ] Quantidades e valores estão corretos.
-- [ ] O carrinho é reinicializado.
-- [ ] É possível retornar ao catálogo.
+- [x] É possível confirmar pedidos válidos.
+- [x] A confirmação apresenta mensagem de sucesso.
+- [x] O resumo apresenta todos os produtos.
+- [x] Quantidades e valores estão corretos.
+- [x] O carrinho é reinicializado.
+- [x] É possível retornar ao catálogo.
 
 ## RF07 — Interface responsiva
 
@@ -282,11 +284,11 @@ A aplicação deverá funcionar adequadamente em computadores, tablets e smartph
 
 ### Critérios de aceitação
 
-- [ ] Layout funcional em desktop.
-- [ ] Layout funcional em tablet.
-- [ ] Layout funcional em smartphone.
-- [ ] Modal adaptado para telas menores.
-- [ ] Sem rolagem horizontal indevida.
+- [x] Layout funcional em desktop.
+- [x] Layout funcional em tablet.
+- [x] Layout funcional em smartphone.
+- [x] Modal adaptado para telas menores.
+- [x] Sem rolagem horizontal indevida.
 
 ## RF08 — Validação
 
@@ -313,11 +315,11 @@ O sistema deverá impedir a confirmação de pedidos vazios e apresentar mensage
 
 ### Critérios de aceitação
 
-- [ ] Pedidos vazios não podem ser confirmados.
-- [ ] Mensagens compreensíveis.
-- [ ] Feedback após operações.
-- [ ] Estados vazios tratados.
-- [ ] Carrinho sempre válido.
+- [x] Pedidos vazios não podem ser confirmados.
+- [x] Mensagens compreensíveis.
+- [x] Feedback após operações.
+- [x] Estados vazios tratados.
+- [x] Carrinho sempre válido.
 
 ---
 
@@ -786,7 +788,7 @@ A identidade temática deverá complementar a experiência, nunca competir com e
 
 ## 10.1. Definição tecnológica
 
-A stack deverá respeitar a estrutura existente no repositório e as decisões tomadas durante a prototipação no Lovable.
+A stack deverá respeitar a estrutura existente no repositório e as decisões técnicas documentadas para a aplicação.
 
 Antes de implementar, analisar:
 
@@ -856,75 +858,77 @@ A aplicação deverá apresentar alternativa visual caso uma imagem não carregu
 
 # 11. CRITÉRIOS DE ACEITAÇÃO
 
+> Os itens marcados foram verificados por testes automatizados, build ou smoke tests documentados em `docs/testes.md`. A disponibilidade das imagens e a ausência de erros no console permanecem sem aprovação.
+
 ## Catálogo
 
-- [ ] Pelo menos seis produtos.
-- [ ] Nome, preço, descrição e categoria em todos.
+- [x] Pelo menos seis produtos.
+- [x] Nome, preço, descrição e categoria em todos.
 - [ ] Imagens disponíveis.
-- [ ] Formatação monetária correta.
-- [ ] Seção de destaques funcional.
+- [x] Formatação monetária correta.
+- [x] Seção de destaques funcional.
 
 ## Categorias
 
-- [ ] Pelo menos duas categorias.
-- [ ] Visualização de todos os produtos.
-- [ ] Filtragem funcional.
-- [ ] Carrinho preservado durante a filtragem.
+- [x] Pelo menos duas categorias.
+- [x] Visualização de todos os produtos.
+- [x] Filtragem funcional.
+- [x] Carrinho preservado durante a filtragem.
 
 ## Carrinho
 
-- [ ] Adição de produtos.
-- [ ] Incremento de produtos repetidos.
-- [ ] Aumento de quantidade.
-- [ ] Redução de quantidade.
-- [ ] Remoção de itens.
-- [ ] Indicador atualizado.
-- [ ] Modal abre e fecha.
-- [ ] Dados preservados ao fechar e reabrir.
+- [x] Adição de produtos.
+- [x] Incremento de produtos repetidos.
+- [x] Aumento de quantidade.
+- [x] Redução de quantidade.
+- [x] Remoção de itens.
+- [x] Indicador atualizado.
+- [x] Modal abre e fecha.
+- [x] Dados preservados ao fechar e reabrir.
 
 ## Cálculos
 
-- [ ] Subtotais corretos.
-- [ ] Total correto.
-- [ ] Atualização automática.
-- [ ] Valores formatados em reais.
-- [ ] Total zerado quando vazio.
+- [x] Subtotais corretos.
+- [x] Total correto.
+- [x] Atualização automática.
+- [x] Valores formatados em reais.
+- [x] Total zerado quando vazio.
 
 ## Finalização
 
-- [ ] Confirmação de pedido válido.
-- [ ] Mensagem de sucesso.
-- [ ] Resumo completo.
-- [ ] Quantidades corretas.
-- [ ] Subtotais corretos.
-- [ ] Total correto.
-- [ ] Carrinho reinicializado.
-- [ ] Retorno ao catálogo.
+- [x] Confirmação de pedido válido.
+- [x] Mensagem de sucesso.
+- [x] Resumo completo.
+- [x] Quantidades corretas.
+- [x] Subtotais corretos.
+- [x] Total correto.
+- [x] Carrinho reinicializado.
+- [x] Retorno ao catálogo.
 
 ## Validação
 
-- [ ] Pedidos vazios impedidos.
-- [ ] Mensagens compreensíveis.
-- [ ] Estados vazios apresentados.
-- [ ] Feedback adequado.
+- [x] Pedidos vazios impedidos.
+- [x] Mensagens compreensíveis.
+- [x] Estados vazios apresentados.
+- [x] Feedback adequado.
 
 ## Responsividade e acessibilidade
 
-- [ ] Desktop funcional.
-- [ ] Tablet funcional.
-- [ ] Smartphone funcional.
-- [ ] Modal responsivo.
-- [ ] Sem rolagem horizontal indevida.
-- [ ] Navegação por teclado.
-- [ ] Controles acessíveis.
+- [x] Desktop funcional.
+- [x] Tablet funcional.
+- [x] Smartphone funcional.
+- [x] Modal responsivo.
+- [x] Sem rolagem horizontal indevida.
+- [x] Navegação por teclado.
+- [x] Controles acessíveis.
 
 ## Qualidade técnica
 
 - [ ] Sem erros críticos no console.
-- [ ] Regras centralizadas.
-- [ ] Componentes com responsabilidades definidas.
-- [ ] Cálculos testados.
-- [ ] Documentação atualizada.
+- [x] Regras centralizadas.
+- [x] Componentes com responsabilidades definidas.
+- [x] Cálculos testados.
+- [x] Documentação atualizada.
 
 ---
 

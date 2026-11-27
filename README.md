@@ -39,7 +39,7 @@ As ferramentas de desenvolvimento e apoio à implementação estão organizadas 
 
 | Ferramenta | Finalidade |
 | --- | --- |
-| Lovable | Prototipação e geração das interfaces da aplicação |
+| Lovable | Prototipação histórica da interface; não é dependência de execução |
 | GitHub Copilot | Assistência na implementação, análise e correção do código |
 | Visual Studio Code | Ambiente de desenvolvimento e edição do código-fonte |
 | Git | Controle de versão e histórico de alterações |
@@ -59,6 +59,12 @@ As ferramentas de desenvolvimento e apoio à implementação estão organizadas 
 
 As versões completas e demais dependências estão declaradas em `package.json`; `bun.lock` registra a resolução usada pelo Bun.
 
+### Independência operacional e imagens
+
+A configuração usa os plugins oficiais de Vite, TanStack Start, React, Tailwind CSS e Nitro. O build e o servidor não dependem do wrapper, da telemetria nem de credenciais do Lovable.
+
+As imagens ainda não estão autocontidas: os nove arquivos `src/assets/*.asset.json` guardam metadados e caminhos `/__l5e/...`, mas os binários não estão no repositório. Como o proxy específico do ambiente Lovable foi removido, obtenha os arquivos originais com licença adequada ou substitua-os por imagens locais autorizadas antes de considerar a experiência visual independente.
+
 ## Estrutura do projeto
 
 A documentação de planejamento, especificação e utilização de Inteligência Artificial permanece separada do código-fonte.
@@ -68,16 +74,18 @@ A documentação de planejamento, especificação e utilização de Inteligênci
 |-- src/
 |   |-- components/          # Componentes do catálogo, carrinho e UI
 |   |-- data/                # Catálogo e categorias
+|   |-- assets/              # Metadados das imagens; binários pendentes
 |   |-- lib/                 # Regras do carrinho e utilitários
 |   |-- routes/              # Rotas TanStack Start
 |   |-- test/                # Testes Vitest
+|   |-- server.ts            # Adaptação de erros do SSR
+|   |-- start.ts             # Middlewares do servidor
 |   `-- styles.css           # Design system e estilos responsivos
 |-- public/                  # Favicon e arquivos públicos
-|-- documentos/              # Especificações e documentação original
-|-- prompts/                 # Prompts Lovable e Copilot preservados
-|-- docs/testes.md           # Registro de validação da implementação
+|-- docs/                    # Especificações, testes e decisões técnicas
+|-- prompts/                 # Prompts de implementação e auditoria
 |-- package.json             # Dependências e comandos da aplicação
-|-- vite.config.ts           # Configuração do Vite/TanStack Start
+|-- vite.config.ts           # Plugins oficiais Vite/TanStack/Nitro
 |-- vitest.config.ts         # Configuração dos testes
 `-- README.md                # Documentação principal
 ```
@@ -107,7 +115,7 @@ As definições relacionadas ao backend, quando aplicáveis, estão documentadas
 
 ### Pré-requisitos
 
-É necessário ter Node.js e npm ou Bun instalados. O arquivo `bun.lock` permite instalar as versões travadas com Bun; também é possível usar npm.
+É necessário ter Node.js e Bun instalados. Bun é o gerenciador recomendado porque `bun.lock` é o lockfile versionado.
 
 ### Instalação
 
@@ -117,28 +125,21 @@ Na raiz do repositório:
 bun install
 ```
 
-Alternativamente:
-
-```sh
-npm install
-```
-
 ### Execução e validação
 
 ```sh
 bun run dev       # inicia o servidor de desenvolvimento
 bun run build     # gera o build de produção
 bun run test      # executa os testes automatizados
+bun run typecheck # verifica os tipos TypeScript
 bun run lint      # verifica o código com ESLint
 ```
 
-Com npm, substitua `bun run` por `npm run` nos comandos acima.
-
-O Vite disponibiliza a aplicação localmente e o comando `preview` permite conferir o build de produção.
+O comando `bun run preview` permite conferir o build de produção. O uso de npm é possível, mas não reproduz o lockfile Bun.
 
 ## API
 
-O MVP atual não possui API de negócio nem integração com backend. O catálogo é local e a confirmação do pedido é demonstrativa; não há cobrança nem persistência do carrinho.
+O MVP não possui API de negócio nem integração com banco de dados. TanStack Start/Nitro executam a renderização no servidor; o catálogo é local e a confirmação é demonstrativa, sem cobrança nem persistência do carrinho. As decisões e limitações estão em `docs/spec-backend.md`.
 
 ## Utilização de Inteligência Artificial
 
@@ -147,7 +148,7 @@ A Inteligência Artificial será utilizada como ferramenta de apoio em diferente
 | Etapa | Aplicação |
 | --- | --- |
 | Planejamento | Análise dos requisitos, organização das funcionalidades e definição da estrutura do projeto |
-| Prototipação e implementação | Geração das interfaces com Lovable e assistência ao desenvolvimento com GitHub Copilot |
+| Prototipação e implementação | Prototipação histórica com Lovable e assistência ao desenvolvimento com GitHub Copilot |
 | Validação e correção | Análise do código gerado, identificação de problemas, correções e execução de testes |
 
 Os prompts originais estão preservados em `prompts/`, acompanhados de uma breve descrição de suas finalidades.
@@ -170,7 +171,7 @@ Os cenários de teste deverão verificar:
 - Apresentação de mensagens de feedback.
 - Adaptação da interface a diferentes tamanhos de tela.
 
-Os testes executados pela implementação integrada estão registrados em `docs/testes.md`. Os documentos de planejamento existentes permanecem em `documentos/`.
+Os testes executados e suas limitações estão registrados em `docs/testes.md`.
 
 ## Critérios de conclusão
 

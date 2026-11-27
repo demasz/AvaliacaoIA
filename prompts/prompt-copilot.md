@@ -52,18 +52,18 @@ Priorize a preservação dos seguintes elementos do Lovable, caso estejam presen
 
 A integração deve preservar a organização original do frontend sempre que possível.
 
-**Importante:** não crie uma pasta `pixel-perfect-replica` dentro de `AulaExemploIA`. Os arquivos da aplicação devem ficar organizados diretamente na raiz do destino.
+**Importante:** Não crie uma pasta `pixel-perfect-replica` dentro de `AvaliacaoIA`. Os arquivos da aplicação devem ficar organizados diretamente na raiz do destino.
 
 ## 4. Preservação do destino
 
-O diretório `AulaExemploIA` é o projeto principal e pode conter documentos e arquivos desenvolvidos anteriormente.
+O diretório `AvaliacaoIA` é o projeto principal e pode conter documentos e arquivos desenvolvidos anteriormente.
 
 Preserve integralmente os seguintes materiais, caso existam:
 
 - `README.md` personalizado.
 - `docs/`
 - `prompts/`
-- `SPEC.md` e documentos de especificação.
+- `docs/spec.md` e documentos de especificação.
 - Registros de testes.
 - Outros arquivos de planejamento e documentação.
 
@@ -85,7 +85,7 @@ Esta integração deve manter o repositório Git do destino.
 - Arquivos de cache.
 - Credenciais, tokens ou arquivos `.env` com informações sensíveis.
 
-Preserve o histórico e a configuração Git do diretório `AulaExemploIA`.
+Preserve o histórico e a configuração Git do diretório `AvaliacaoIA`.
 
 Analise o `.gitignore` dos dois projetos e consolide as regras necessárias, sem remover proteções existentes.
 
@@ -130,7 +130,7 @@ Verifique também se os caminhos de imagens, fontes, estilos e demais recursos c
 
 A integração será considerada concluída quando:
 
-- O frontend estiver na raiz de `AulaExemploIA`.
+- O frontend estiver na raiz de `AvaliacaoIA`.
 - A estrutura original da aplicação estiver preservada.
 - Os documentos e prompts do destino continuarem intactos.
 - As dependências estiverem corretamente configuradas.
@@ -159,7 +159,7 @@ Ao terminar, apresente um relatório com:
 
 ## Orientação final
 
-Trate `pixel-perfect-replica` como a fonte da implementação visual e funcional do Cardápio Digital, e `AulaExemploIA` como o repositório definitivo.
+Trate `pixel-perfect-replica` como a fonte da implementação visual e funcional do Cardápio Digital, e `AvaliacaoIA` como o repositório definitivo.
 
 Não faça uma simples cópia indiscriminada. Realize uma integração consciente, preservando o trabalho existente nos dois projetos.
 

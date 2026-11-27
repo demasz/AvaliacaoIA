@@ -1,6 +1,21 @@
 # Validação do cardápio digital
 
-Data: 26/11/2026. Ambiente: aplicação local em Chromium e Vitest.
+Data do registro histórico: 26/11/2026. Ambiente: aplicação local em Chromium e Vitest.
+
+> Os fluxos de navegador abaixo foram registrados em execução anterior. Eles não comprovam que as imagens estejam disponíveis no repositório atual: a auditoria encontrou nove metadados `.asset.json` apontando para `/__l5e/...`, sem os binários correspondentes. A configuração atual já não inclui o proxy Lovable.
+
+## Reexecução nesta auditoria
+
+- Instalação com `bun install --frozen-lockfile`: concluída sem alterações no lockfile.
+- `bun run test`: **15 testes aprovados** em 2 arquivos.
+- `bun run typecheck`: aprovado.
+- `bun run lint`: 0 erros e 6 avisos preexistentes `react-refresh/only-export-components`.
+- `bun run build`: aprovado; Vite gerou os ambientes cliente e SSR e Nitro gerou o preset `node-server`.
+- Servidor de produção `node .output/server/index.mjs`: página inicial respondeu HTTP 200.
+- Navegador no servidor de produção: adicionar produto, abrir sacola, confirmar pedido e limpar o contador funcionaram.
+- Layout: sem rolagem horizontal em 1440×900, 1366×768, 768×1024, 390×844 e 360×800; o diálogo da sacola ficou dentro da viewport em 360×800.
+- Imagens: **pendente**; os binários não estão presentes. O sucesso do build não valida o carregamento visual dos arquivos.
+- Requisições de imagem no navegador: os nove caminhos `/__l5e/...` retornaram 404 e geraram erros de carregamento no console; não foram encontrados erros de execução no fluxo de compra testado.
 
 ## Testes automatizados
 
@@ -14,7 +29,7 @@ Exemplo da especificação validado: 2 × R$ 25,00 + R$ 8,00 + 2 × R$ 12,00 = *
 
 | Cenários | Resultado observado |
 |---|---|
-| T01–T02 | Página inicial abriu, oito produtos completos no catálogo e nenhuma imagem quebrada. |
+| T01–T02 | Registro histórico: página inicial abriu e exibiu oito produtos. A afirmação histórica de que não havia imagens quebradas não se aplica à auditoria atual, que encontrou somente referências sem binários locais. |
 | T03–T04 | Bebidas mostrou dois produtos; Todos restaurou oito. |
 | T05–T06 | Adição repetida reuniu unidades na mesma linha; contador chegou a cinco. |
 | T07–T08 | Incremento da Poção Azul mudou total de R$ 82,00 para R$ 90,00; redução restaurou R$ 82,00. |
@@ -29,7 +44,7 @@ Exemplo da especificação validado: 2 × R$ 25,00 + R$ 8,00 + 2 × R$ 12,00 = *
 | T23–T24 | Fechar e reabrir preservou R$ 82,00; Escape fechou e restaurou foco no botão da sacola. Fechamento pelo botão e pela área externa também validado. |
 | T25 | Confirmação zerou o contador; nova compra e remoção funcionaram. |
 
-Nenhum erro de execução capturado no fluxo completo. Compilação automática final sem erros.
+Na execução histórica não foi capturado erro de execução no fluxo então testado; a auditoria atual confirmou que as rotas de imagem continuam retornando 404.
 
 ## Arquivos e decisões
 
@@ -51,4 +66,4 @@ Nenhum erro de execução capturado no fluxo completo. Compilação automática 
 - Confirmação exclusivamente local e demonstrativa: sem pagamento, envio à cozinha, entrega ou cadastro.
 - Categorias vazias e falha de imagem têm tratamento; filtro desconhecido foi testado na lógica, mas as quatro categorias públicas possuem produtos.
 - Validação feita em Chromium; leitores de tela, outros navegadores e aparelhos físicos não foram testados.
-- As imagens usam distribuição de arquivos do projeto; as fontes são carregadas pelo Google Fonts.
+- O registro de navegador acima é histórico e não foi reexecutado nesta auditoria. As imagens locais continuam pendentes; não usar esse registro para afirmar que os recursos visuais estão portáveis.

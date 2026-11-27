@@ -44,9 +44,8 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
-// Hosting compresses every response at the edge. Never compress a body (gzip, brotli,
-// CompressionStream) or set content-encoding here or in a server route: the body gets encoded
-// twice and renders garbled.
+// Leave transport compression to the deployment adapter; do not encode bodies or set
+// content-encoding in this handler.
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {

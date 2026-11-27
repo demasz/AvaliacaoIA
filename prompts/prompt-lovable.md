@@ -12,17 +12,17 @@ O projeto deverá ser desenvolvido como um MVP funcional, não como uma landing 
 
 ### DOCUMENTO DE REFERÊNCIA
 
-A especificação oficial do projeto está no arquivo `SPEC.md`.
+A especificação oficial do projeto está em `docs/spec.md`.
 
 Antes de iniciar a implementação:
 
-1. Leia integralmente o `SPEC.md`, caso esteja disponível no contexto do projeto.
+1. Leia integralmente `docs/spec.md`, caso esteja disponível no contexto do projeto.
 2. Compreenda os oito requisitos funcionais.
 3. Identifique as regras de negócio.
 4. Respeite as restrições do MVP.
 5. Utilize este prompt como orientação de implementação visual e experiência do usuário.
 
-Em caso de conflito, o `SPEC.md` possui prioridade sobre decisões estéticas deste prompt.
+Em caso de conflito, `docs/spec.md` possui prioridade sobre decisões estéticas deste prompt.
 
 ---
 
@@ -669,7 +669,7 @@ O resultado esperado é um cardápio digital que pareça um produto comercial re
 
 Antes de finalizar:
 
-- Verifique os requisitos do `SPEC.md`.
+- Verifique os requisitos de `docs/spec.md`.
 - Identifique requisitos não implementados.
 - Corrija inconsistências visuais.
 - Verifique todos os controles.

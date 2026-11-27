@@ -119,6 +119,8 @@ A especificação detalhada dos requisitos, regras de negócio e critérios de a
 
 As definições relacionadas ao backend, quando aplicáveis, estão documentadas em `docs/spec-backend.md`.
 
+Para uma visão completa da arquitetura, catálogo, API, modelo de dados, execução e limitações, consulte o [guia de documentação do projeto](./docs/documentacao-projeto.md).
+
 ## Instalação e execução
 
 ### Pré-requisitos

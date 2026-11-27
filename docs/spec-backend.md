@@ -58,7 +58,7 @@ Fluxo de uma chamada: Express aplica CORS, Helmet e limite de JSON; a rota valid
 
 ## 4. Banco de dados
 
-Todos os identificadores persistidos são UUIDs. Os slugs estáveis identificam os registros do seed; o frontend usa os UUIDs retornados pela API para montar pedidos. Valores monetários são inteiros em centavos.
+Todos os identificadores persistidos são UUIDs. IDs estáveis identificam os registros do seed, enquanto slugs únicos são usados para filtros e URLs do catálogo. O frontend usa os UUIDs retornados pela API para montar pedidos. Valores monetários são inteiros em centavos.
 
 | Tabela        | Campos e regras principais                                                                                                                        |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -263,6 +263,6 @@ Os resultados e limites de cada execução são registrados em `docs/testes.md`;
 - Não há autenticação, autorização de usuário ou consulta posterior do pedido.
 - O status `CONFIRMED` significa somente persistência demonstrativa; não há cobrança.
 - Não há chave de idempotência em pedidos. O servidor não repete requisições automaticamente, mas uma repetição manual após resposta perdida pode duplicar o registro.
-- O catálogo não possui imagens locais no estado atual; `imageUrl` é `null` e o frontend usa fallback.
+- Seis pratos usam imagens locais em `public/images/`; as duas bebidas sem imagem própria usam o fallback visual.
 - O carrinho não persiste após recarregar.
 - CORS local assume o frontend em `localhost:3000` ou `127.0.0.1:3000`; configure a origem real se a porta ou o host forem diferentes.

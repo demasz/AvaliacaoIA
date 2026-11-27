@@ -79,7 +79,7 @@ Relacionamentos e integridade:
 
 O Umzug aplica a migration versionada `20261126-initial-schema` e armazena o histórico em `SequelizeMeta`. O seed contém quatro categorias e oito produtos: seis pratos com imagens locais e duas bebidas sem imagem própria. Ele usa IDs estáveis e executa em transação; execuções repetidas atualizam os registros existentes, inclusive quando nomes ou slugs do catálogo mudam.
 
-As seis imagens dos pratos ficam em `public/images/` e são servidas pelo frontend; os produtos apontam para caminhos locais em `imageUrl`. As bebidas sem imagem usam `imageUrl: null` e o fallback visual da interface. Nenhuma URL interna do Lovable é usada.
+As seis imagens dos pratos ficam em `Frontend/public/images/` e são servidas pelo frontend; os produtos apontam para caminhos locais em `imageUrl`. As bebidas sem imagem usam `imageUrl: null` e o fallback visual da interface. Nenhuma URL interna do Lovable é usada.
 
 ## 5. Regras de pedidos
 
@@ -203,27 +203,28 @@ Não versionar arquivos `.env` nem usar credenciais de produção localmente.
 
 ## 9. Integração frontend
 
-O cliente HTTP está em `src/lib/api/`: centraliza URL base, JSON, timeout de 10 segundos, erros HTTP e falhas de conexão. Produtos e categorias são obtidos pela API; o filtro por categoria acontece no catálogo já carregado. Estados de carregamento, erro, catálogo vazio e resultados são distintos.
+O cliente HTTP está em `Frontend/src/lib/api/`: centraliza URL base, JSON, timeout de 10 segundos, erros HTTP e falhas de conexão. Produtos e categorias são obtidos pela API; o filtro por categoria acontece no catálogo já carregado. Estados de carregamento, erro, catálogo vazio e resultados são distintos.
 
 O reducer mantém apenas itens do carrinho e a confirmação recebida. O frontend envia somente `{ items: [{ productId, quantity }] }`; após resposta bem-sucedida, exibe snapshots e total do backend e limpa o carrinho. Em falha, os itens permanecem e a interface permite tentar novamente. A interface limita a quantidade por produto em 99 e não permite alterações enquanto o envio está em andamento.
 
-O frontend não armazena pedidos nem assume autoridade sobre preços. O carrinho continua temporário em memória e se perde ao recarregar a página.
+O frontend em `Frontend/` não armazena pedidos nem assume autoridade sobre preços. O carrinho continua temporário em memória e se perde ao recarregar a página.
 
 ## 10. Execução e testes
 
 Pré-requisitos: Node.js 24+, Bun e PostgreSQL acessível.
 
-Na raiz, instale e inicie o frontend:
+Na pasta `Frontend/`, instale e inicie a interface:
 
-```sh
+```powershell
+Set-Location Frontend
 bun install
 bun run dev
 ```
 
-Em outro terminal:
+Em outro terminal, configure e inicie a API:
 
 ```powershell
-cd backend
+Set-Location backend
 bun install
 Copy-Item .env.example .env
 ```
@@ -256,13 +257,13 @@ Para integração, crie um banco separado cujo nome termine em `_test` e defina 
 
 Os testes unitários cobrem schemas, contratos HTTP, erros, filtros e regras financeiras. Os testes de integração usam Supertest e PostgreSQL real para validar catálogo, filtros, consulta individual, pedido financeiro de 8200 centavos, rejeições, snapshots, rollback e idempotência do seed.
 
-Os resultados e limites de cada execução são registrados em `docs/testes.md`; os comandos e resultados devem corresponder à execução observada, não apenas à cobertura planejada.
+Os resultados e limites de cada execução são registrados em `docs/testes.md`; os comandos e resultados devem corresponder à execução observada, não apenas à cobertura planejada. Os comandos do frontend são executados em `Frontend/`, e os comandos da API em `backend/`.
 
 ## 12. Limitações conhecidas
 
 - Não há autenticação, autorização de usuário ou consulta posterior do pedido.
 - O status `CONFIRMED` significa somente persistência demonstrativa; não há cobrança.
 - Não há chave de idempotência em pedidos. O servidor não repete requisições automaticamente, mas uma repetição manual após resposta perdida pode duplicar o registro.
-- Seis pratos usam imagens locais em `public/images/`; as duas bebidas sem imagem própria usam o fallback visual.
+- Seis pratos usam imagens locais em `Frontend/public/images/`; as duas bebidas sem imagem própria usam o fallback visual.
 - O carrinho não persiste após recarregar.
 - CORS local assume o frontend em `localhost:3000` ou `127.0.0.1:3000`; configure a origem real se a porta ou o host forem diferentes.

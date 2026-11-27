@@ -2,6 +2,8 @@
 
 Data do registro histórico: 26/11/2026. Ambiente: aplicação local em Chromium e Vitest.
 
+> **Organização atual:** o projeto frontend fica em `Frontend/`; os comandos do frontend devem ser executados nessa pasta. Os comandos do backend devem ser executados em `backend/`. Os caminhos e diretórios de trabalho nos registros históricos correspondem ao estado do repositório durante aquelas execuções.
+
 > Os fluxos de navegador e verificações desta seção são registros históricos, anteriores à integração dos recortes em `public/images/`. Naquele estado, nove metadados `.asset.json` apontavam para `/__l5e/...` sem os binários correspondentes. Consulte a seção de validação posterior para o estado atual.
 
 ## Validação anterior: independência operacional do frontend
@@ -48,25 +50,25 @@ Na execução histórica não foi capturado erro de execução no fluxo então t
 
 ## Arquivos e decisões
 
-- `src/data/products.ts`: filtros e formatação monetária; os dados de execução agora vêm da API.
-- `src/lib/api/`: cliente HTTP, tipos e funções de acesso a categorias, produtos e pedidos.
-- `src/lib/cart.ts`: estado, validação, cálculos e operações do carrinho.
-- `src/components/products/product-card.tsx`: cartões reutilizáveis e alternativa para falha de imagem.
-- `src/components/cart/cart-content.tsx`: carrinho e resumo confirmado.
-- `src/routes/index.tsx`: experiência principal e metadados próprios.
-- `src/routes/__root.tsx`: fontes, idioma e identificação do aplicativo.
-- `src/styles.css`: identidade visual e adaptação às telas.
-- `src/components/ui/button.tsx` e `dialog.tsx`: variantes e diálogo acessível.
-- `public/images/`: seis recortes locais usados pelos pratos do catálogo.
-- `src/assets/*.asset.json`: metadados legados do protótipo, não usados pelo catálogo atual.
-- `src/test/cart.test.ts`: regras automatizadas.
+- `Frontend/src/data/products.ts`: filtros e formatação monetária; os dados de execução agora vêm da API.
+- `Frontend/src/lib/api/`: cliente HTTP, tipos e funções de acesso a categorias, produtos e pedidos.
+- `Frontend/src/lib/cart.ts`: estado, validação, cálculos e operações do carrinho.
+- `Frontend/src/components/products/product-card.tsx`: cartões reutilizáveis e alternativa para falha de imagem.
+- `Frontend/src/components/cart/cart-content.tsx`: carrinho e resumo confirmado.
+- `Frontend/src/routes/index.tsx`: experiência principal e metadados próprios.
+- `Frontend/src/routes/__root.tsx`: fontes, idioma e identificação do aplicativo.
+- `Frontend/src/styles.css`: identidade visual e adaptação às telas.
+- `Frontend/src/components/ui/button.tsx` e `dialog.tsx`: variantes e diálogo acessível.
+- `Frontend/public/images/`: seis recortes locais usados pelos pratos do catálogo.
+- `Frontend/src/assets/*.asset.json`: metadados legados do protótipo, não usados pelo catálogo atual.
+- `Frontend/src/test/cart.test.ts`: regras automatizadas.
 - `AGENTS.md` e `roadmap.md`: decisões e escopo de trabalho.
 
 ## Limitações
 
 - O carrinho permanece em memória; recarregar a página reinicia a sacola.
 - O pedido é persistido, mas é apenas demonstrativo: não há pagamento, envio à cozinha, entrega ou cadastro.
-- Seis pratos têm imagens locais em `public/images/`; as duas bebidas sem imagem própria usam o fallback.
+- Seis pratos têm imagens locais em `Frontend/public/images/`; as duas bebidas sem imagem própria usam o fallback.
 - Os fluxos abaixo foram validados em Chromium; leitores de tela, outros navegadores e aparelhos físicos não foram testados.
 - Os testes detalhados de teclado e nos demais tamanhos listados acima pertencem à validação histórica.
 
@@ -107,7 +109,7 @@ Os testes de backend exercitam categorias, catálogo, filtros combinados, consul
 
 ## Validação após a integração das imagens
 
-Seis recortes individuais fornecidos na pasta `Assets/` foram copiados para `public/images/` e associados aos seis pratos do catálogo. As duas bebidas foram mantidas e continuam usando o fallback; a imagem composta não é necessária.
+Seis recortes individuais fornecidos na pasta `Frontend/Assets/` foram copiados para `Frontend/public/images/` e associados aos seis pratos do catálogo. As duas bebidas foram mantidas e continuam usando o fallback; a imagem composta não é necessária.
 
 ### Comandos e resultados
 
@@ -131,3 +133,14 @@ Total: **40 testes aprovados e 0 reprovados**. O seed foi reexecutado sobre os r
 - No build de produção aberto em Chromium, as seis imagens apareceram com `naturalWidth` maior que zero e os cartões exibiram nomes, descrições e categorias atualizados.
 - A categoria antiga de hambúrgueres foi substituída por “Pratos principais”; acompanhamentos, bebidas e sobremesas continuam disponíveis.
 - O seed preservou os IDs dos produtos e das categorias, atualizando os registros existentes em vez de criar duplicatas.
+
+## Validação após a separação do frontend
+
+O frontend e suas configurações foram movidos da raiz para `Frontend/`; `backend/`, `docs/` e `prompts/` permanecem na raiz. `npm exec --yes --package=bun bun -- install --frozen-lockfile`, executado em `Frontend/`, instalou as dependências sem alterar `Frontend/bun.lock`.
+
+- `npm run test`: **17 testes aprovados** em 3 arquivos.
+- `npm run typecheck`: aprovado.
+- `npm run lint`: 0 erros e 6 avisos existentes `react-refresh/only-export-components`.
+- `npm run build`: aprovado a partir de `Frontend/`.
+- Aplicação no navegador servida a partir da nova pasta: HTTP 200, oito produtos e seis imagens locais carregadas sem falhas.
+- API local de teste: `GET /api/health` e `GET /api/products` responderam; o catálogo retornou oito produtos.

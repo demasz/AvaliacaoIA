@@ -1,6 +1,6 @@
 # Especificação — Cardápio Digital
 
-> **Estado da integração:** a aplicação usa configuração oficial de Vite, TanStack Start e Nitro, sem o wrapper Lovable. Seis imagens de pratos ficam em `public/images/`; as bebidas usam o fallback visual. Consulte `docs/testes.md`.
+> **Estado da integração:** a aplicação usa configuração oficial de Vite, TanStack Start e Nitro, sem o wrapper Lovable. O frontend está organizado em `Frontend/`; seis imagens de pratos ficam em `Frontend/public/images/` e as bebidas usam o fallback visual. Consulte `docs/testes.md`.
 
 > **Atualização do catálogo:** os seis pratos foram alinhados aos recortes locais (`Mix de Carnes`, `Espetão da Taverna`, `Espetinho da Taverna`, `Mix de Cogumelos`, `Pão com Queijo` e `Maçã Recheada`). As duas bebidas foram mantidas.
 
@@ -795,7 +795,7 @@ A stack deverá respeitar a estrutura existente no repositório e as decisões t
 Antes de implementar, analisar:
 
 - Estrutura atual.
-- `package.json`.
+- `Frontend/package.json`.
 - Dependências.
 - Arquivos de configuração.
 - Componentes.

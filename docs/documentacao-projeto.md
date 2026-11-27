@@ -30,8 +30,8 @@ Fluxo de leitura do catálogo:
 
 ```text
 Navegador
-  -> src/routes/index.tsx
-  -> src/lib/api/
+  -> Frontend/src/routes/index.tsx
+  -> Frontend/src/lib/api/
   -> API Express (backend/src/routes/)
   -> serviços (backend/src/modules/)
   -> Sequelize
@@ -42,7 +42,7 @@ No registro de pedidos, a API valida os identificadores e as quantidades, lê os
 
 ## 4. Catálogo atual
 
-Os preços são valores iniciais do seed e podem ser alterados no banco. As imagens dos pratos são arquivos estáticos em `public/images/`; as bebidas usam o fallback visual.
+Os preços são valores iniciais do seed e podem ser alterados no banco. As imagens dos pratos são arquivos estáticos em `Frontend/public/images/`; as bebidas usam o fallback visual. Os arquivos fornecidos originalmente ficam em `Frontend/Assets/`.
 
 | Produto | Categoria | Preço | Imagem |
 | --- | --- | ---: | --- |
@@ -60,23 +60,28 @@ As categorias têm slugs `mains`, `sides`, `desserts` e `drinks`. Os produtos e 
 ## 5. Estrutura do repositório
 
 ```text
-src/
-├── components/       # Cartões, sacola e componentes de interface
-├── lib/api/          # Cliente HTTP, tipos e funções de acesso à API
-├── lib/cart.ts       # Reducer, validação e cálculos da sacola
-├── routes/           # Páginas TanStack Start
-├── test/             # Testes do frontend
-└── styles.css        # Identidade visual e responsividade
-backend/
-├── src/config/       # Configuração e validação de ambiente
-├── src/database/     # Conexão, migrations e seed
-├── src/models/       # Models e associações Sequelize
-├── src/modules/      # Regras do catálogo e pedidos
-├── src/routes/       # Endpoints e validação HTTP
-└── tests/            # Testes unitários e de integração
-public/images/        # Imagens locais dos seis pratos
-docs/                 # Especificação, guia e registros de validação
-prompts/              # Prompts de implementação preservados
+.
+├── Frontend/
+│   ├── src/
+│   │   ├── components/   # Cartões, sacola e componentes de interface
+│   │   ├── lib/api/      # Cliente HTTP, tipos e funções de acesso à API
+│   │   ├── lib/cart.ts   # Reducer, validação e cálculos da sacola
+│   │   ├── routes/       # Páginas TanStack Start
+│   │   └── test/         # Testes do frontend
+│   ├── public/images/    # Imagens locais dos pratos
+│   ├── Assets/           # Arquivos de imagem originais
+│   ├── package.json      # Dependências e scripts do frontend
+│   └── vite.config.ts    # Vite, TanStack Start e Nitro
+├── backend/
+│   ├── src/config/       # Configuração e validação de ambiente
+│   ├── src/database/     # Conexão, migrations e seed
+│   ├── src/models/       # Models e associações Sequelize
+│   ├── src/modules/      # Regras do catálogo e pedidos
+│   ├── src/routes/       # Endpoints e validação HTTP
+│   └── tests/            # Testes unitários e de integração
+├── docs/                 # Especificação, guia e registros de validação
+├── prompts/              # Prompts de implementação preservados
+└── README.md
 ```
 
 ## 6. API e pedidos
@@ -128,7 +133,7 @@ O `product_id` em um item pode ficar nulo se o produto for removido, mas o nome 
 
 ### Configurar o banco e iniciar a API
 
-No terminal PowerShell, na raiz:
+No terminal PowerShell, a partir da raiz:
 
 ```powershell
 Set-Location backend
@@ -148,9 +153,10 @@ A API escuta por padrão em `http://localhost:3001`. O seed deve ser executado a
 
 ### Iniciar o frontend
 
-Em outro terminal, na raiz do repositório:
+Em outro terminal:
 
 ```powershell
+Set-Location Frontend
 bun install
 bun run dev
 ```
@@ -159,7 +165,7 @@ O frontend é servido em `http://localhost:3000` e usa `http://localhost:3001/ap
 
 ## 9. Testes e builds
 
-Na raiz do projeto:
+Dentro de `Frontend/`:
 
 ```powershell
 bun run test
@@ -168,7 +174,7 @@ bun run lint
 bun run build
 ```
 
-No diretório `backend/`:
+Dentro de `backend/`:
 
 ```powershell
 bun run test

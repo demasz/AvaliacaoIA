@@ -55,18 +55,18 @@ As ferramentas de desenvolvimento e apoio à implementação estão organizadas 
 | TanStack Start / Router | 1.168.61 / 1.170.42     | Aplicação com renderização no servidor e rotas baseadas em arquivos |
 | Vite                    | 8.1                     | Desenvolvimento e build                                             |
 | Tailwind CSS            | 4.3                     | Estilos e utilitários CSS                                           |
-| Radix UI e Lucide React | conforme `package.json` | Componentes acessíveis e ícones                                     |
+| Radix UI e Lucide React | conforme `Frontend/package.json` | Componentes acessíveis e ícones                          |
 | Vitest                  | 4.1                     | Testes automatizados                                                |
 
 O backend independente usa Node.js 24+, Express 5, TypeScript, PostgreSQL, Sequelize, Zod, Umzug, Vitest e Supertest. Suas dependências e scripts ficam em `backend/package.json`.
 
-As versões completas e demais dependências estão declaradas em `package.json`; `bun.lock` registra a resolução usada pelo Bun.
+As dependências e comandos do frontend estão declarados em `Frontend/package.json`; `Frontend/bun.lock` registra a resolução usada pelo Bun. O backend possui seu próprio manifesto e lockfile em `backend/`.
 
 ### Independência operacional e imagens
 
 A configuração usa os plugins oficiais de Vite, TanStack Start, React, Tailwind CSS e Nitro. O build e o servidor não dependem do wrapper, da telemetria nem de credenciais do Lovable.
 
-Seis recortes de pratos, criados por IA e fornecidos em `Assets/`, foram copiados para `public/images/` e são servidos localmente. As duas bebidas não têm imagens próprias e usam o fallback da interface. Os metadados antigos em `src/assets/*.asset.json`, que apontam para caminhos `/__l5e/...`, não são usados pelo catálogo atual.
+Seis recortes de pratos, criados por IA e fornecidos em `Frontend/Assets/`, foram copiados para `Frontend/public/images/` e são servidos localmente. As duas bebidas não têm imagens próprias e usam o fallback da interface. Os metadados antigos em `Frontend/src/assets/*.asset.json`, que apontam para caminhos `/__l5e/...`, não são usados pelo catálogo atual.
 
 ## Estrutura do projeto
 
@@ -74,31 +74,27 @@ A documentação de planejamento, especificação e utilização de Inteligênci
 
 ```text
 .
-|-- src/
-|   |-- components/          # Componentes do catálogo, carrinho e UI
-|   |-- data/                # Tipos, filtros e formatação do catálogo
-|   |-- assets/              # Metadados legados das imagens do protótipo
-|   |-- lib/                 # Regras do carrinho e cliente HTTP da API
-|   |-- routes/              # Rotas TanStack Start
-|   |-- test/                # Testes Vitest
-|   |-- server.ts            # Adaptação de erros do SSR
-|   |-- start.ts             # Middlewares do servidor
-|   `-- styles.css           # Design system e estilos responsivos
+|-- Frontend/
+|   |-- src/
+|   |   |-- components/      # Componentes do catálogo, carrinho e UI
+|   |   |-- data/            # Tipos, filtros e formatação do catálogo
+|   |   |-- assets/          # Metadados legados das imagens do protótipo
+|   |   |-- lib/             # Regras do carrinho e cliente HTTP da API
+|   |   |-- routes/          # Rotas TanStack Start
+|   |   `-- test/            # Testes Vitest
+|   |-- public/              # Imagens dos pratos e arquivos estáticos
+|   |-- package.json         # Dependências e comandos do frontend
+|   |-- vite.config.ts       # Plugins oficiais Vite/TanStack/Nitro
+|   `-- ...                  # Configurações TypeScript, ESLint e Vitest
 |-- backend/
 |   |-- src/                 # API Express, models, migrations e services
 |   `-- tests/               # Testes unitários e de integração
-|-- public/
-|   |-- images/              # Seis imagens locais dos pratos
-|   `-- ...                  # Favicon e demais arquivos públicos
 |-- docs/                    # Especificações, testes e decisões técnicas
 |-- prompts/                 # Prompts de implementação e auditoria
-|-- package.json             # Dependências e comandos da aplicação
-|-- vite.config.ts           # Plugins oficiais Vite/TanStack/Nitro
-|-- vitest.config.ts         # Configuração dos testes
 `-- README.md                # Documentação principal
 ```
 
-O frontend é executado diretamente na raiz deste repositório, sem uma pasta de projeto aninhada.
+O frontend e o backend são projetos separados dentro do mesmo repositório. Os comandos do frontend devem ser executados na pasta `Frontend/`; os comandos da API, em `backend/`.
 
 ## Requisitos
 
@@ -125,13 +121,14 @@ Para uma visão completa da arquitetura, catálogo, API, modelo de dados, execu�
 
 ### Pré-requisitos
 
-É necessário ter Node.js 24 ou superior, Bun e PostgreSQL instalados. Bun é o gerenciador recomendado para o frontend porque `bun.lock` é o lockfile versionado. O backend possui lockfile próprio.
+É necessário ter Node.js 24 ou superior, Bun e PostgreSQL instalados. Bun é o gerenciador recomendado para o frontend porque `Frontend/bun.lock` é o lockfile versionado. O backend possui lockfile próprio.
 
 ### Instalação
 
-Na raiz do repositório, instale e inicie o frontend:
+No terminal do frontend:
 
-```sh
+```powershell
+Set-Location Frontend
 bun install
 bun run dev
 ```
@@ -140,8 +137,8 @@ O frontend usa `http://localhost:3001/api` por padrão. Para outra URL, defina `
 
 Em outro terminal, configure e inicie o backend:
 
-```sh
-cd backend
+```powershell
+Set-Location backend
 bun install
 ```
 
@@ -157,7 +154,7 @@ bun run db:seed
 bun run dev
 ```
 
-O backend e o frontend são processos independentes. Os demais comandos de validação do frontend, executados na raiz, são `bun run build`, `bun run test`, `bun run typecheck` e `bun run lint`; `bun run preview` serve o build de produção.
+O backend e o frontend são processos independentes. Execute os comandos de validação do frontend (`bun run build`, `bun run test`, `bun run typecheck`, `bun run lint` e `bun run preview`) dentro de `Frontend/`.
 
 Consulte [backend/README.md](./backend/README.md) para configuração completa, testes, migrações e exemplos de chamadas.
 
@@ -183,7 +180,7 @@ O código gerado por ferramentas de IA deverá ser analisado, compreendido e tes
 
 ## Testes e validação
 
-A validação do MVP deverá contemplar os requisitos funcionais e os principais fluxos de utilização.
+A validação do MVP deverá contemplar os requisitos funcionais e os principais fluxos de utilização. Execute os comandos do frontend em `Frontend/` e os comandos da API em `backend/`.
 
 Os cenários de teste deverão verificar:
 

@@ -1,6 +1,6 @@
 # Backend — Cardápio Digital
 
-API REST independente para o catálogo e registro de pedidos demonstrativos da Taverna do Bosque. O backend usa Express 5 e PostgreSQL; o frontend é iniciado separadamente na raiz do repositório. Não há pagamento, estoque, autenticação ou painel administrativo.
+API REST independente para o catálogo e registro de pedidos demonstrativos da Taverna do Bosque. O backend usa Express 5 e PostgreSQL; o frontend é iniciado separadamente em `Frontend/`. Não há pagamento, estoque, autenticação ou painel administrativo.
 
 ## Pré-requisitos
 
@@ -31,7 +31,7 @@ Crie localmente os bancos referenciados. Use credenciais próprias para desenvol
 
 `DATABASE_URL` é a conexão da aplicação. Para integração, `DATABASE_URL_TEST` é obrigatória e o nome do banco deve terminar em `_test`; a aplicação de teste nunca usa `DATABASE_URL` como alternativa. A execução das migrações e seeds atua somente no banco selecionado pela variável correspondente.
 
-`FRONTEND_ORIGINS` aceita origens completas sem caminho, separadas por vírgula. A lista padrão contempla o servidor Vite/TanStack local na porta `3000`. Ajuste-a quando o frontend usar outra origem. `VITE_API_URL` é uma variável do frontend, definida na raiz, e não contém segredo.
+`FRONTEND_ORIGINS` aceita origens completas sem caminho, separadas por vírgula. A lista padrão contempla o servidor Vite/TanStack local na porta `3000`. Ajuste-a quando o frontend usar outra origem. `VITE_API_URL` é uma variável do frontend, definida no ambiente do projeto em `Frontend/`, e não contém segredo.
 
 ## Banco de dados
 
@@ -46,16 +46,18 @@ bun run db:seed
 
 ## Executar
 
-Terminal 1 — na raiz do repositório:
+Terminal 1 — na pasta `Frontend/`:
 
-```sh
+```powershell
+Set-Location Frontend
 bun install
 bun run dev
 ```
 
-Terminal 2 — nesta pasta `backend/`:
+Terminal 2 — na pasta `backend/`:
 
-```sh
+```powershell
+Set-Location backend
 bun run dev
 ```
 
@@ -115,5 +117,5 @@ bun run start
 - **Falha de conexão ao iniciar:** verifique se o PostgreSQL está ativo, se o banco existe e se `DATABASE_URL` está correta. A API não inicia desconectada.
 - **CORS bloqueado:** adicione a origem exata do frontend a `FRONTEND_ORIGINS` e reinicie a API; não use `*`.
 - **Integração não inicia:** defina `DATABASE_URL_TEST` e confirme que o nome do banco termina em `_test`.
-- **Imagem ausente:** seis pratos usam imagens locais servidas pelo frontend em `public/images/`; bebidas sem imagem própria retornam `null` e usam o fallback visual.
+- **Imagem ausente:** seis pratos usam imagens locais servidas pelo frontend em `Frontend/public/images/`; bebidas sem imagem própria retornam `null` e usam o fallback visual.
 - **Produto ou categoria não encontrado:** confirme se `db:seed` foi executado e use os UUIDs e slugs retornados pela API.
